@@ -1,4 +1,5 @@
-Hotel Sentiment Analysis
+Hotel Sentiment Analysis:
+
 Hotel Recommendation Tool is a web application developed during the AlgoArena hackathon organized by VIT Vellore. The application secured a top 10 place in the competition. It allows users to search for hotels in a specific location and provides sentiment analysis of reviews for those hotels.
 
 Features:
