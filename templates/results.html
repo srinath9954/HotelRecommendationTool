@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000; /* Black background */
+            color: #ffffff; /* White text */
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            color: #ffffff; /* White text */
+        }
+
+        table, th, td {
+            border: 1px solid white; /* White border */
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: black; /* Black text */
+        }
+
+        #map {
+            height: 400px;
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        .chart-container {
+            width: 80%;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+<h1>Hotels in {{ location }}</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Rating</th>
+        <th>Sentiment Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for hotel in hotels %}
+    <tr>
+        <td>{{ hotel.name }}</td>
+        <td>{{ hotel.location }}</td>
+        <td>{{ hotel.rating }}</td>
+        <td>{{ hotel.sentiment_score }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div id="map"></div>
+
+<div class="chart-container" style="background-color: #f2f2f2;">
+    <h2>Compound Sentiment Score of Hotels</h2>
+    <canvas id="barChart"></canvas>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+<script>
+    var map = L.map('map').setView([{{ hotels[0].lat }}, {{ hotels[0].lon }}], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    {% for hotel in hotels %}
+    L.marker([{{ hotel.lat }}, {{ hotel.lon }}]).addTo(map)
+        .bindPopup('<b>{{ hotel.name }}</b><br>{{ hotel.location }}<br><a href="{{ hotel.link }}" target="_blank">View Location</a>');
+    {% endfor %}
+
+    // Bar Chart
+    var ctxBar = document.getElementById('barChart').getContext('2d');
+    var barChart = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: [{% for hotel in hotels %}"{{ hotel.name }}",{% endfor %}],
+            datasets: [{
+                label: 'Sentiment Score',
+                data: [{% for hotel in hotels %}{{ hotel.sentiment_score }},{% endfor %}],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    
+</script>
+</body>
+</html>
