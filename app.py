@@ -1,9 +1,13 @@
 from flask import Flask, render_template, request
 from bs4 import BeautifulSoup
 import requests
+import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import re
+
+# Download NLTK resources (specifically the vader_lexicon)
 nltk.download('vader_lexicon')
+
 app = Flask(__name__)
 
 # Initializing the VADER sentiment analyzer
