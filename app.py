@@ -1,19 +1,21 @@
 from flask import Flask, render_template, request
 from bs4 import BeautifulSoup
 import requests
+import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import re
+
+# Download necessary NLTK data
 nltk.download('vader_lexicon')
+
 app = Flask(__name__)
 
 # Initializing the VADER sentiment analyzer
 sid = SentimentIntensityAnalyzer()
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @app.route('/search', methods=['POST'])
 def search_hotels():
@@ -39,8 +41,7 @@ def search_hotels():
             location_element = hotel.find('span', {'data-testid': 'address'})
             location = location_element.text.strip() if location_element else None
 
-            rating_element = hotel.find(
-                'div', {'class': 'f13857cc8c e008572b71'})
+            rating_element = hotel.find('div', {'class': 'f13857cc8c e008572b71'})
             rating_text = rating_element.text.strip() if rating_element else None
 
             # Extracting only the numerical part from the rating text using regular expressions
@@ -77,7 +78,6 @@ def search_hotels():
     else:
         return "Failed to retrieve data from Booking.com"
 
-
 def get_coordinates(location):
     # URL for the Nominatim API
     url = f"https://nominatim.openstreetmap.org/search?format=json&q={location}"
@@ -97,19 +97,15 @@ def get_coordinates(location):
     # Return None if coordinates cannot be obtained
     return None, None
 
-
 def get_sentiment_score(url):
     response_hotel = requests.get(url)
     if response_hotel.status_code == 200:
         soup_hotel = BeautifulSoup(response_hotel.content, 'html.parser')
-        review_elements = soup_hotel.findAll(
-            'div', {'class': 'eb2c6a4f4b c99bd84b8f'})
-        reviews = [review_element.get_text(strip=True)
-                   for review_element in review_elements]
+        review_elements = soup_hotel.findAll('div', {'class': 'eb2c6a4f4b c99bd84b8f'})
+        reviews = [review_element.get_text(strip=True) for review_element in review_elements]
 
         # Perform sentiment analysis
-        compound_scores = [sid.polarity_scores(
-            review)['compound'] for review in reviews]
+        compound_scores = [sid.polarity_scores(review)['compound'] for review in reviews]
         if compound_scores:
             average_score = sum(compound_scores) / len(compound_scores)
         else:
@@ -117,7 +113,6 @@ def get_sentiment_score(url):
         return average_score
     else:
         return 0.0
-
 
 if __name__ == '__main__':
     app.run(debug=True)
