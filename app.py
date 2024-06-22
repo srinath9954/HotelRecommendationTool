@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import re
-
+nltk.download('vader_lexicon')
 app = Flask(__name__)
 
 # Initializing the VADER sentiment analyzer
