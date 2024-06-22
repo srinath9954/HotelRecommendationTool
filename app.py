@@ -1,13 +1,9 @@
 from flask import Flask, render_template, request
 from bs4 import BeautifulSoup
 import requests
-import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import re
-
-# Download NLTK resources (specifically the vader_lexicon)
 nltk.download('vader_lexicon')
-
 app = Flask(__name__)
 
 # Initializing the VADER sentiment analyzer
@@ -44,7 +40,7 @@ def search_hotels():
             location = location_element.text.strip() if location_element else None
 
             rating_element = hotel.find(
-                'div', {'class': 'a3b8729ab1 d86cee9b25'})
+                'div', {'class': 'f13857cc8c e008572b71'})
             rating_text = rating_element.text.strip() if rating_element else None
 
             # Extracting only the numerical part from the rating text using regular expressions
@@ -54,7 +50,7 @@ def search_hotels():
             else:
                 rating = None
 
-            link_element = hotel.find('a', class_='a78ca197d0')
+            link_element = hotel.find('a', class_='eba3d3a8df')
             hotel_url = link_element['href'] if link_element else None
 
             if location and hotel_url:
@@ -107,8 +103,8 @@ def get_sentiment_score(url):
     if response_hotel.status_code == 200:
         soup_hotel = BeautifulSoup(response_hotel.content, 'html.parser')
         review_elements = soup_hotel.findAll(
-            'div', {'data-testid': 'featuredreview-text'})
-        reviews = [review_element.text.strip()
+            'div', {'class': 'eb2c6a4f4b c99bd84b8f'})
+        reviews = [review_element.get_text(strip=True)
                    for review_element in review_elements]
 
         # Perform sentiment analysis
