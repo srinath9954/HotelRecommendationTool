@@ -63,9 +63,9 @@ def search_hotels():
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        
+
         hotels = soup.findAll('div', {'data-testid': 'property-card'})  # Update class as needed
-        if not hotels:
-            print("No hotels found in the HTML response")
         hotels_data = []
 
         for hotel in hotels:
@@ -108,7 +108,6 @@ def search_hotels():
         else:
             return "No hotels found for the given location"
     else:
-        print(f"Failed to retrieve data from Booking.com, Status Code: {response.status_code}")
         return f"Failed to retrieve data from Booking.com, Status Code: {response.status_code}"
 
 if __name__ == '__main__':
