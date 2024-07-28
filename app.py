@@ -63,6 +63,8 @@ def search_hotels():
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        
+
         hotels = soup.findAll('div', {'data-testid': 'property-card'})  # Update class as needed
         hotels_data = []
 
