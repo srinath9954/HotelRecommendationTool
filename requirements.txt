@@ -1,6 +1,5 @@
-Flask==2.0.1
-Werkzeug==2.0.2
+Flask==2.1.1
 beautifulsoup4==4.10.0
 requests==2.26.0
 nltk==3.6.5
-Gunicorn
+gunicorn==20.1.0  # Add this for running the app on Vercel
